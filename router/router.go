@@ -13,4 +13,5 @@ func InitRouterAndStartServer() {
 	setCommonRouters(root) //注册一些通用的组件
 	setAdminRouters(root)
 	setUserRouters(root)
+	router.Run(":8090")
 }

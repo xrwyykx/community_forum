@@ -8,7 +8,7 @@ type PointLog struct {
 	LogId      int       `json:"logId"`
 	Points     int       `json:"points"`
 	RelatedId  int       `json:"RelatedId"`
-	UserId     int       `json:"UserId"`
+	UserId     int64     `json:"UserId"`
 }
 
 func (a *PointLog) TableName() string {

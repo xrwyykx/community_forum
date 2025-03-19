@@ -4,7 +4,7 @@ import "time"
 
 type Comment struct {
 	CommentID  int       `json:"comment_id" gorm:"column:comment_id;autoIncrement"`
-	UserID     int       `json:"user_id" gorm:"column:user_id;not null"`
+	UserID     int64     `json:"user_id" gorm:"column:user_id;not null"`
 	PostID     int       `json:"post_id" gorm:"column:post_id;not null"`
 	ParentID   int       `json:"parent_id" gorm:"column:parent_id;default:null"`
 	Content    string    `json:"content" gorm:"column:content;not null"`

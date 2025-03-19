@@ -4,7 +4,7 @@ import "time"
 
 type Post struct {
 	PostID     int       `json:"post_id" gorm:"column:post_id;autoIncrement"`
-	UserID     int       `json:"user_id" gorm:"column:user_id;not null"`
+	UserID     int64     `json:"user_id" gorm:"column:user_id;not null"`
 	Title      string    `json:"title" gorm:"column:title;not null"`
 	Content    string    `json:"content" gorm:"column:content;not null"`
 	IsTop      bool      `json:"is_top" gorm:"column:is_top;default:false"`

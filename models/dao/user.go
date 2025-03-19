@@ -3,7 +3,7 @@ package dao
 import "time"
 
 type User struct {
-	UserID     int       `json:"user_id" gorm:"column:user_id;autoIncrement"`
+	UserID     int64     `json:"user_id" gorm:"column:user_id;autoIncrement"`
 	Username   string    `json:"username" gorm:"column:username;not null"`
 	Password   string    `json:"password" gorm:"column:password;not null"`
 	Email      string    `json:"email" gorm:"column:email;not null"`
