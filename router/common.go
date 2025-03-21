@@ -6,13 +6,10 @@ import (
 )
 
 func setCommonRouters(root *gin.RouterGroup) {
-	root.POST("api/common/get-user-info", controller.GetUserInfo)
-	//agentOuterService(root.Group("api/common"))
 	root.POST("api/common/register", controller.Register)
 	root.POST("api/common/login", controller.Login)
+	root.POST("api/comon/get-user-id", controller.TestGetId)
+	//用户信息
+	root.POST("api/comon/update-info", controller.UpdateUserInfo)
+	root.POST("api/common/get-user-info", controller.GetUserInfo)
 }
-
-//func agentOuterService(apiPath *gin.RouterGroup){
-//	apiPath.POST("api/common/register", controller.Register)
-//
-//}

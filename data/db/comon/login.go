@@ -12,18 +12,6 @@ import (
 )
 
 func CheackRegister(c *gin.Context, data dto.RegisterMap) error {
-	//有些约束条件
-	//1必须输入用户名/密码/头像  如果没有邮箱也没事
-	//if err := c.ShouldBindJSON(&data); err != nil {
-	//	return c.JSON(http.StatusOK, gin.H{
-	//		"message":"参数绑定错误",
-	//	})//怎么返回错误
-	//}
-	//用户名不能重复
-	//密码不能小于6位
-	//要对密码进行加密
-	//2 如果前面都顺利通过，需要生成一个user_id,通过雪花算法生成，避免用户id复用
-	//如果以上都可以，将变化加载到数据库，user表
 	if data.UserName == "" || data.Password == "" {
 		return errors.New("请输入正确的用户名或密码")
 	}
@@ -77,15 +65,9 @@ func GenerateSnowflakeID() (int64, error) {
 }
 
 func CheckLogin(c *gin.Context, data dto.LoginMap) error {
-	//var count int64
 	if data.UserName == "" || data.Password == "" {
 		return errors.New("请输入完整的用户名和密码")
 	}
-	//hashedPassword, err := bcrypt.GenerateFromPassword([]byte(data.Password), bcrypt.DefaultCost)
-	//if err != nil {
-	//	return err
-	//}
-	//println(string(hashedPassword))
 	var user dao.User
 	if err := global.GetDbConn(c).Model(&dao.User{}).Where("username = ? ", data.UserName).First(&user).Error; err != nil {
 		return errors.New("用户名不存在")
