@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"communityforum/app"
 	"communityforum/data/db/user"
 	"communityforum/models/co"
 	"communityforum/models/dto"
@@ -9,14 +10,46 @@ import (
 )
 
 func AddPost(c *gin.Context) {
-
+	//还有除了发布帖子帖子表会发生变化，要注意用户表的用户积分
+	//也会发生变化，因为用户可以通过发帖子增加积分
+	userId := app.GetUserId(c)
+	var param dto.AddPostMap
+	if err := c.ShouldBindJSON(&param); err != nil {
+		c.JSON(http.StatusBadRequest, co.BadRequest("参数绑定失败"+err.Error()))
+		return
+	}
+	if err := user.AddPost(c, userId, param); err != nil {
+		c.JSON(http.StatusBadRequest, co.BadRequest("用户发布帖子失败"+err.Error()))
+		return
+	}
+	c.JSON(http.StatusOK, co.Success("用户成功发布帖子", nil))
 }
 
 func UpdatePost(c *gin.Context) {
-
+	//userId := app.GetUserId(c)
+	var param dto.UpdatePostMap
+	if err := c.ShouldBindJSON(&param); err != nil {
+		c.JSON(http.StatusBadRequest, co.BadRequest("参数绑定失败"))
+		return
+	}
+	if err := user.UpdatePost(c, param); err != nil {
+		c.JSON(http.StatusBadRequest, co.BadRequest("编辑帖子失败"+err.Error()))
+		return
+	}
+	c.JSON(http.StatusOK, co.Success("更新帖子成功", nil))
 }
 func DeletePost(c *gin.Context) {
-
+	var param dto.DeletePostMap
+	if err := c.ShouldBindJSON(&param); err != nil {
+		c.JSON(http.StatusBadRequest, co.BadRequest("参数绑定失败"+err.Error()))
+		return
+	}
+	err := user.DeletePost(c, param)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, co.BadRequest("删除帖子失败"+err.Error()))
+		return
+	}
+	c.JSON(http.StatusOK, co.Success("删除帖子成功", nil))
 }
 func GetPostDetail(c *gin.Context) {
 	var param dto.GetPostMap

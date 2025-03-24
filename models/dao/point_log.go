@@ -3,7 +3,7 @@ package dao
 import "time"
 
 type PointLog struct {
-	Action     string    `json:"action"`
+	Action     int       `json:"action"`
 	CreateTime time.Time `json:"createTime"`
 	LogId      int       `json:"logId"`
 	Points     int       `json:"points"`
