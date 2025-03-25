@@ -109,7 +109,7 @@ func UpdatePost(c *gin.Context, param dto.UpdatePostMap) error {
 	return nil
 }
 
-func DeletePost(c *gin.Context, param dto.DeletePostMap) error {
+func DeletePost(c *gin.Context, param dto.PostIdMap) error {
 	var data dao.Post
 	if err := global.GetDbConn(c).Model(&dao.Post{}).Where("post_id = ?", param.PostId).First(&data).Error; err != nil {
 		return err
@@ -118,6 +118,60 @@ func DeletePost(c *gin.Context, param dto.DeletePostMap) error {
 		return err
 	}
 	return nil
+}
+
+func ReplyPost(c *gin.Context, param dto.ReplyPostMap, userId int64) error {
+	var data dao.Post
+	if err := global.GetDbConn(c).Model(&dao.Post{}).Where("post_id = ?", param.PostId).First(&data).Error; err != nil {
+		return err
+	}
+	tx := global.GetDbConn(c).Begin()
+	if err := tx.Error; err != nil {
+		return err
+	}
+	res := dao.Comment{UserID: userId, PostID: param.PostId, ParentID: param.ParentId, Content: param.Content, CreateTime: time.Now()}
+	if err := tx.Model(&dao.Comment{}).Create(&res).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	//Updates(map[string]interface{}{
+	//	"points": gorm.Expr("points + ?", 5),
+	if err := tx.Model(&dao.User{}).Where("user_id = ?", userId).Updates(map[string]interface{}{
+		"points": gorm.Expr("points+?", 3),
+	}).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	res2 := dao.PointLog{UserId: userId, Action: 1, Points: 3, RelatedId: param.PostId, CreateTime: time.Now()}
+	if err := tx.Model(&dao.PointLog{}).Create(&res2).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	if err := tx.Commit().Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetPostReply(c *gin.Context, param dto.PostIdMap) (data []dto.PostReply, err error, total int64) {
+	var res dao.Post
+	if err = global.GetDbConn(c).Model(&dao.Post{}).Where("post_id = ?", param.PostId).First(&res).Error; err != nil {
+		return
+	}
+	err = global.GetDbConn(c).Model(&dao.Comment{}).Where("post_id = ?", param.PostId).
+		Joins("join user on user.user_id = comment.user_id").
+		Select("comment.*,user.user_id,user.username").
+		Count(&total).
+		Order("comment.create_time desc").
+		Find(&data).Error
+	if err != nil {
+		return
+	}
+
+	for i := range data {
+		data[i].CreateTimeMar = utils.MarshalTime(data[i].CreateTime)
+	}
+	return
 }
 
 //count,order,offset,limit,find

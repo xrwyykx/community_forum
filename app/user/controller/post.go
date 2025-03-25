@@ -39,7 +39,7 @@ func UpdatePost(c *gin.Context) {
 	c.JSON(http.StatusOK, co.Success("更新帖子成功", nil))
 }
 func DeletePost(c *gin.Context) {
-	var param dto.DeletePostMap
+	var param dto.PostIdMap
 	if err := c.ShouldBindJSON(&param); err != nil {
 		c.JSON(http.StatusBadRequest, co.BadRequest("参数绑定失败"+err.Error()))
 		return
@@ -67,3 +67,36 @@ func GetPostDetail(c *gin.Context) {
 		"total": total,
 	}))
 }
+func ReplyPost(c *gin.Context) {
+	userId := app.GetUserId(c)
+	var param dto.ReplyPostMap
+	if err := c.ShouldBindJSON(&param); err != nil {
+		c.JSON(http.StatusBadRequest, co.BadRequest("参数绑定失败"+err.Error()))
+		return
+	}
+	if err := user.ReplyPost(c, param, userId); err != nil {
+		c.JSON(http.StatusBadRequest, co.BadRequest("回复帖子失败"+err.Error()))
+		return
+	}
+	c.JSON(http.StatusOK, co.Success("回复帖子成功", nil))
+}
+
+func GetPostReply(c *gin.Context) {
+	var param dto.PostIdMap
+	if err := c.ShouldBindJSON(&param); err != nil {
+		c.JSON(http.StatusBadRequest, co.BadRequest("参数绑定失败"+err.Error()))
+		return
+	}
+	data, err, total := user.GetPostReply(c, param)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, co.BadRequest("获取帖子评论失败"+err.Error()))
+		return
+	}
+	c.JSON(http.StatusOK, co.Success("获取帖子评论成功", gin.H{
+		"data":  data,
+		"total": total,
+	}))
+}
+
+func LikesPost(c *gin.Context)    {}
+func ReportThings(c *gin.Context) {}
