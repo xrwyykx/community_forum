@@ -12,9 +12,6 @@ import (
 )
 
 func GetPostDetail(c *gin.Context, param dto.GetPostMap) (err error, data []dto.PostDetail, total int64) {
-	//UserName string `json:"userName" gorm:"column:userName"`
-	//Title    string `json:"title" gorm:"column:title"`
-	//Content  string `json:"content" gorm:"column:content"`
 	db := global.GetDbConn(c).Model(&dao.Post{}).Joins("Join user on post.user_id =user.user_id")
 	if param.Content != "" {
 		if param.Status == 0 { //不填默认为0 也就是按标题或者内容

@@ -1,16 +1,18 @@
 package controller
 
 import (
+	"communityforum/app"
 	"communityforum/data/db/comon"
 	"communityforum/global"
 	"communityforum/models/co"
 	"communityforum/models/dao"
 	"communityforum/models/dto"
 	"encoding/json"
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func Login(c *gin.Context) {
@@ -25,7 +27,13 @@ func Login(c *gin.Context) {
 	} else {
 		session := generateSession()
 		saveSessionToRedis(c, session, data.UserName)
-		c.SetCookie("SESSION", session, 3600, "/", "", false, true)
+
+		// 设置cookie，确保在所有路径下可访问
+		c.SetCookie("SESSION", session, 3600, "/", "", false, false)
+
+		// 打印调试信息
+		log.Printf("Setting cookie: SESSION=%s", session)
+
 		c.JSON(http.StatusOK, co.Success("登录成功", nil))
 	}
 }
@@ -65,4 +73,17 @@ func saveSessionToRedis(c *gin.Context, session string, userName string) {
 	if err != nil {
 		log.Println("将sessioin存入redis失败:", err)
 	}
+}
+
+func Logout(c *gin.Context) {
+
+}
+
+func Logoff(c *gin.Context) {
+	userId := app.GetUserId(c)
+	if err := comon.Logoff(c, userId); err != nil {
+		c.JSON(http.StatusBadRequest, co.BadRequest("注销账号失败"+err.Error()))
+		return
+	}
+	c.JSON(http.StatusOK, co.Success("注销账号成功", nil))
 }

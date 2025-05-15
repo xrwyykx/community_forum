@@ -5,8 +5,9 @@ import (
 	"communityforum/data/db/user"
 	"communityforum/models/co"
 	"communityforum/models/dto"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func AddPost(c *gin.Context) {
@@ -98,5 +99,32 @@ func GetPostReply(c *gin.Context) {
 	}))
 }
 
-func LikesPost(c *gin.Context)    {}
-func ReportThings(c *gin.Context) {}
+func LikesPost(c *gin.Context) {
+	//var param dto.
+}
+
+func GetUserPosts(c *gin.Context) {
+	//userId := app.GetUserId(c)
+	//if userId <= 0 {
+	//	c.JSON(http.StatusUnauthorized, co.BadRequest("未登录或会话已过期"))
+	//	return
+	//}
+	//
+	//var param dto.PageParam
+	//if err := c.ShouldBindJSON(&param); err != nil {
+	//	c.JSON(http.StatusBadRequest, co.BadRequest("参数绑定失败: "+err.Error()))
+	//	return
+	//}
+	//
+	//posts, total, err := comon.GetUserPosts(c, userId, param.Page, param.PageSize)
+	//if err != nil {
+	//	log.Printf("获取用户帖子失败: user_id=%d, error=%v", userId, err)
+	//	c.JSON(http.StatusBadRequest, co.BadRequest("获取用户帖子失败: "+err.Error()))
+	//	return
+	//}
+	//
+	//c.JSON(http.StatusOK, co.Success("获取用户帖子成功", gin.H{
+	//	"total": total,
+	//	"posts": posts,
+	//}))
+}

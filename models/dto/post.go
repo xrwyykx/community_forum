@@ -56,3 +56,6 @@ type PostReply struct {
 	CreateTime    time.Time `json:"-" gorm:"column:create_time;not null"`
 	CreateTimeMar string    `json:"createTime"` //前端展现以及传过来的数据是json
 }
+
+type LikesPostMap struct {
+}
